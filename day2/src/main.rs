@@ -5,7 +5,8 @@ fn main() {
     let file_path = "./src/data";
     let s = fs::read_to_string(file_path).expect("File not found !!!");
 
-    println!("{}", part1(&s))
+    println!("{}", part1(&s));
+    println!("{}", part2(&s));
 }
 
 // Max allowed values
@@ -15,9 +16,10 @@ const BLUE: i32 = 14;
 
 fn part1(s: &String) -> usize {
     let mut sum = 0;
-    for line in s.lines().enumerate() {
-        let row = &line.1[line.1.find(':').expect("No : found !") + 2..];
-        let states = row.split("; ").collect::<Vec<&str>>();
+    for (index, line) in s.lines().enumerate() {
+        let states = &line[line.find(':').expect("No : found !") + 2..]
+            .split("; ")
+            .collect::<Vec<&str>>();
 
         let mut is_valid = true;
 
@@ -45,8 +47,39 @@ fn part1(s: &String) -> usize {
             }
         }
         if is_valid {
-            sum += line.0 + 1
+            sum += index + 1
         };
+    }
+    sum
+}
+
+fn part2(s: &String) -> i32 {
+    let mut sum = 0;
+    for line in s.lines() {
+        let states = &line[line.find(':').expect("No : found !") + 2..]
+            .split("; ")
+            .collect::<Vec<&str>>();
+
+        let mut r = 0;
+        let mut g = 0;
+        let mut b = 0;
+
+        for state in states {
+            let value = state
+                .split(", ")
+                .map(|x| x.split_once(' ').expect("No space between color and count"))
+                .collect::<Vec<_>>();
+
+            for t in value {
+                match t.1 {
+                    "red" => r = r.max(t.0.parse::<i32>().unwrap()),
+                    "green" => g = g.max(t.0.parse::<i32>().unwrap()),
+                    "blue" => b = b.max(t.0.parse::<i32>().unwrap()),
+                    _ => panic!("Invalid color!"),
+                }
+            }
+        }
+        sum += r * g * b;
     }
     sum
 }
