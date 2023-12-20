@@ -1,7 +1,7 @@
 use std::{collections::HashSet, fs};
 
 fn main() {
-    let file_path = "./src/data";
+    let file_path = "./src/data.txt";
     let s = fs::read_to_string(file_path).expect("File not found");
 
     part1(&s);

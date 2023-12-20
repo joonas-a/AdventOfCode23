@@ -2,8 +2,8 @@ use core::panic;
 use std::fs;
 
 fn main() {
-    let file_path = "./src/data";
-    let s = fs::read_to_string(file_path).expect("File not found !!!");
+    let file_path = "./src/data.txt";
+    let s = fs::read_to_string(file_path).expect("File not found!");
 
     println!("{}", part1(&s));
     println!("{}", part2(&s));

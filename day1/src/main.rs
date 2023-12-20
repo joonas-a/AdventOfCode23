@@ -1,5 +1,13 @@
 use std::fs;
 
+fn main() {
+    let file_path = "./src/data.txt";
+    let s = fs::read_to_string(file_path).expect("File not found!");
+
+    println!("Part 1 result: {}", part1(&s));
+    println!("Part 2 result: {}", part2(&s));
+}
+
 fn part1(s: &String) -> i32 {
     let mut count = 0;
     for line in s.lines() {
@@ -71,13 +79,5 @@ fn part2(s: &String) -> i32 {
 
         count += format!("{}{}", x, y).parse::<i32>().unwrap();
     }
-
     count
-}
-fn main() {
-    let file_path = "./src/data";
-    let s = fs::read_to_string(file_path).expect("File not found !!!");
-
-    println!("Part 1 result: {}", part1(&s));
-    println!("Part 2 result: {}", part2(&s));
 }

@@ -2,8 +2,8 @@ use std::fs;
 
 // Very expensive and slow brute-force approach
 fn main() {
-    let file_path = "./src/data";
-    let s = fs::read_to_string(file_path).expect("File not found !!!");
+    let file_path = "./src/data.txt";
+    let s = fs::read_to_string(file_path).expect("File not found!");
 
     println!("Answer: {}", part2(&s));
 }
@@ -59,7 +59,6 @@ fn part2(s: &str) -> i64 {
     println!("Maps initialized, start bruteforcing :)");
     for (start, end) in &ranges {
         for seed in *start..=*end {
-            // dbg!(seed);
             let mut source = seed;
             let mut found = false;
             for map in maps.iter() {

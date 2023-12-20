@@ -1,7 +1,7 @@
 use std::fs;
 
 fn main() {
-    let file_path = "./src/data";
+    let file_path = "./src/data.txt";
     let s = fs::read_to_string(file_path).expect("Could not read file");
 
     part1(&s);
@@ -24,20 +24,16 @@ fn part1(input: &String) {
         .map(|num_str| num_str.parse::<i32>().expect("Failed to parse numbers"))
         .collect();
 
-    // dbg!(times, distances);
-    let mut counter = 0;
+    let mut _counter = 0;
     let mut power = Vec::new();
-    // each game
     for i in 0..times.len() {
-        // times in ms, skip 0ms
-        counter = 0;
+        _counter = 0;
         for j in 1..times[i] {
-            // 9 / 5
             if (distances[i] / j) < times[i] - j {
-                counter += 1
+                _counter += 1
             }
         }
-        power.push(counter);
+        power.push(_counter);
     }
     println!("Part 1 result {}", power.into_iter().product::<i32>());
 }
