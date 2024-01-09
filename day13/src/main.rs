@@ -8,19 +8,26 @@ fn main() {
 }
 
 fn solve(input: &str) {
-    let mut res = 0;
+    let mut res1 = 0;
+    let mut res2 = 0;
     for puzzle in input.split("\n\n") {
-        res += find_reflection(puzzle);
+        res1 += find_reflection(puzzle, 0);
+        res2 += find_reflection(puzzle, 1);
     }
-    println!("Part 1 ans: {res}");
+    println!("Part 1 ans: {res1}");
+    println!("Part 2 and: {res2}");
 }
 
-fn find_reflection(puzzle: &str) -> usize {
+fn find_reflection(puzzle: &str, smudge_limit: usize) -> usize {
     let mut matrix: Vec<Vec<char>> = puzzle.lines().map(|line| line.chars().collect()).collect();
 
-    fn mirror_finder(matrix: &Vec<Vec<char>>, multiplier: usize) -> Option<usize> {
+    fn mirror_finder(
+        matrix: &Vec<Vec<char>>,
+        multiplier: usize,
+        smudge_limit: usize,
+    ) -> Option<usize> {
         for i in 0..matrix.len() - 1 {
-            if matrix[i] == matrix[i + 1] && compare_rows(matrix, matrix.len() - 1, (i, i + 1)) {
+            if compare_rows(matrix, matrix.len() - 1, (i, i + 1), smudge_limit) {
                 return Some((1 + i) * multiplier);
             }
         }
@@ -28,28 +35,40 @@ fn find_reflection(puzzle: &str) -> usize {
     }
 
     // Check for horizontal mirror
-    if let Some(res) = mirror_finder(&matrix, 100) {
+    if let Some(res) = mirror_finder(&matrix, 100, smudge_limit) {
         return res;
     }
 
     // Check for "vertical" mirror by rotating original 90 degrees clockwise
     rotate_matrix(&mut matrix);
-    if let Some(res) = mirror_finder(&matrix, 1) {
+    if let Some(res) = mirror_finder(&matrix, 1, smudge_limit) {
         return res;
     }
 
     0
 }
 
-fn compare_rows(rows: &[Vec<char>], max_id: usize, init_match: (usize, usize)) -> bool {
+fn compare_rows(
+    rows: &[Vec<char>],
+    max_id: usize,
+    init_match: (usize, usize),
+    smudge_limit: usize,
+) -> bool {
     let mut step: usize = 0;
-    while rows[init_match.0 - step] == rows[init_match.1 + step] {
+    let mut smudges = 0;
+
+    while !(step > init_match.0 || init_match.1 + step > max_id) {
+        rows[init_match.0 - step]
+            .iter()
+            .zip(rows[init_match.1 + step].iter())
+            .for_each(|(a, b)| {
+                if a != b {
+                    smudges += 1
+                }
+            });
         step += 1;
-        if step > init_match.0 || init_match.1 + step > max_id {
-            return true;
-        }
     }
-    false
+    smudges == smudge_limit
 }
 
 fn rotate_matrix(matrix: &mut Vec<Vec<char>>) {
